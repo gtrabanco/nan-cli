@@ -137,6 +137,14 @@ verify_provenance() {
     return 0
   fi
 
+  # "unknown command" or similar means gh is too old for attestation — skip
+  case "$out" in
+    *"unknown command"*|*"command not found"*|*"subcommand not found"*)
+      info "gh does not support attestation (too old), skipping provenance check"
+      return 0
+      ;;
+  esac
+
   # Nothing recorded against these bytes, which is a 404 from the attestations
   # API. Two different things look identical from out here: a release from
   # before this repo signed anything, and an archive that is not the one it
